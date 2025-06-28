@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Essência Vital</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2d5a4b 0%, #1a3d33 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4ade80, #22d3ee);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: #2d5a4b;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #4ade80, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #4ade80, #22d3ee);
+            border-radius: 15px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #2d5a4b;
+            font-weight: bold;
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .card p {
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #4ade80, #22d3ee);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            color: #2d5a4b;
+            font-weight: bold;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #2d5a4b 0%, #1a3d33 100%);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #fff;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .close:hover {
+            opacity: 1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4ade80, #22d3ee);
+            color: #2d5a4b;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 222, 128, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255,255,255,0.3);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+        }
+
+        .upload-area.dragover {
+            border-color: #22d3ee;
+            background: rgba(34, 211, 238, 0.1);
+        }
+
+        .ebook-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .ebook-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .ebook-item:hover {
+            transform: scale(1.05);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .ebook-cover {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #4ade80, #22d3ee);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #2d5a4b;
+            font-weight: bold;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #4ade80, #22d3ee);
+            color: #2d5a4b;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+            animation: slideInRight 0.3s ease-out;
+            z-index: 1001;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .dashboard { grid-template-columns: 1fr; }
+            .modal-content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo"><img src="/home/ubuntu/LogoEssenciavital.jpeg" alt="Essência Vital Logo" style="width: 120px; height: 120px; border-radius: 50%;"></div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalEbooks">12</div>
+                <div>Total de Ebooks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalCategories">5</div>
+                <div>Categorias</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="monthlyViews">847</div>
+                <div>Visualizações do Mês</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="whatsappClicks">234</div>
+                <div>Cliques WhatsApp</div>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="card" onclick="openModal('ebooksModal')">
+                <div class="card-icon"><img src="/home/ubuntu/ebooks_icon.png" alt="Gerenciar Ebooks" style="width: 60px; height: 60px;"></div>
+                <h3>Gerenciar Ebooks</h3>
+                <p>Adicione, edite ou remova seus ebooks. Upload de capas, definição de preços e descrições.</p>
+            </div>
+
+            <div class="card" onclick="openModal('categoriesModal')">
+                <div class="card-icon"><img src="/home/ubuntu/categories_icon.png" alt="Categorias" style="width: 60px; height: 60px;"></div>
+                <h3>Categorias</h3>
+                <p>Organize seus ebooks em categorias. Crie, edite ou exclua categorias facilmente.</p>
+            </div>
+
+            <div class="card" onclick="openModal('contentModal')">
+                <div class="card-icon"><img src="/home/ubuntu/content_icon.png" alt="Editar Conteúdo" style="width: 60px; height: 60px;"></div>
+                <h3>Editar Conteúdo</h3>
+                <p>Modifique textos da página inicial, sobre, contato e outras seções do site.</p>
+            </div>
+
+            <div class="card" onclick="openModal('settingsModal')">
+                <div class="card-icon"><img src="/home/ubuntu/settings_icon.png" alt="Configurações" style="width: 60px; height: 60px;"></div>
+                <h3>Configurações</h3>
+                <p>Ajuste informações de contato, WhatsApp, redes sociais e outras configurações.</p>
+            </div>
+
+            <div class="card" onclick="openModal('analyticsModal')">
+                <div class="card-icon"><img src="/home/ubuntu/analytics_icon.png" alt="Relatórios" style="width: 60px; height: 60px;"></div>
+                <h3>Relatórios</h3>
+                <p>Veja estatísticas de acesso, ebooks mais visualizados e performance do site.</p>
+            </div>
+
+            <div class="card" onclick="openModal('backupModal')">
+                <div class="card-icon"><img src="/home/ubuntu/backup_icon.png" alt="Backup" style="width: 60px; height: 60px;"></div>
+                <h3>Backup</h3>
+                <p>Faça backup de todo seu conteúdo e restaure quando necessário.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ebooks -->
+    <div id="ebooksModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('ebooksModal')">&times;</span>
+            <h2>📚 Gerenciar Ebooks</h2>
+            
+            <div class="form-group">
+                <label>Adicionar Novo Ebook</label>
+                <div class="upload-area" onclick="document.getElementById('coverUpload').click()">
+                    <p>📷 Clique ou arraste a capa do ebook aqui</p>
+                    <small>JPG, PNG ou WEBP até 5MB</small>
+                </div>
+                <input type="file" id="coverUpload" style="display: none;" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label>Título do Ebook</label>
+                <input type="text" placeholder="Ex: Guia Completo de Bem-Estar">
+            </div>
+
+            <div class="form-group">
+                <label>Descrição</label>
+                <textarea rows="3" placeholder="Descreva o conteúdo do ebook..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Preço (R$)</label>
+                <input type="number" placeholder="29.90" step="0.01">
+            </div>
+
+            <div class="form-group">
+                <label>Categoria</label>
+                <select>
+                    <option>Bem-Estar</option>
+                    <option>Saúde Mental</option>
+                    <option>Nutrição</option>
+                    <option>Exercícios</option>
+                    <option>Mindfulness</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="saveEbook()">💾 Salvar Ebook</button>
+            <button class="btn btn-secondary" onclick="closeModal('ebooksModal')">Cancelar</button>
+
+            <div class="ebook-grid">
+                <div class="ebook-item">
+                    <div class="ebook-cover">Capa do Ebook 1</div>
+                    <h4>Mindfulness Diário</h4>
+                    <p>R$ 19,90</p>
+                    <small>Bem-Estar</small>
+                </div>
+                <div class="ebook-item">
+                    <div class="ebook-cover">Capa do Ebook 2</div>
+                    <h4>Alimentação Saudável</h4>
+                    <p>R$ 24,90</p>
+                    <small>Nutrição</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Categorias -->
+    <div id="categoriesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('categoriesModal')">&times;</span>
+            <h2>🏷️ Gerenciar Categorias</h2>
+            
+            <div class="form-group">
+                <label>Nova Categoria</label>
+                <input type="text" id="newCategory" placeholder="Nome da categoria">
+            </div>
+            
+            <button class="btn" onclick="addCategory()">➕ Adicionar Categoria</button>
+            
+            <div style="margin-top: 30px;">
+                <h3>Categorias Existentes</h3>
+                <div id="categoriesList">
+                    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Bem-Estar</span>
+                        <div>
+                            <button class="btn" style="padding: 5px 15px; margin: 0 5px;">✏️</button>
+                            <button class="btn" style="padding: 5px 15px; background: #ef4444;">🗑️</button>
+                        </div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Saúde Mental</span>
+                        <div>
+                            <button class="btn" style="padding: 5px 15px; margin: 0 5px;">✏️</button>
+                            <button class="btn" style="padding: 5px 15px; background: #ef4444;">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Conteúdo -->
+    <div id="contentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('contentModal')">&times;</span>
+            <h2>✏️ Editar Conteúdo do Site</h2>
+            
+            <div class="form-group">
+                <label>Título Principal</label>
+                <input type="text" value="Transforme sua vida com conhecimento">
+            </div>
+
+            <div class="form-group">
+                <label>Subtítulo</label>
+                <textarea rows="2">Descubra ebooks que vão revolucionar seu bem-estar e qualidade de vida</textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Sobre Nós</label>
+                <textarea rows="4">Somos especializados em conteúdo de qualidade sobre bem-estar, saúde mental e crescimento pessoal...</textarea>
+            </div>
+
+            <button class="btn" onclick="saveContent()">💾 Salvar Alterações</button>
+            <button class="btn btn-secondary" onclick="closeModal('contentModal')">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Modal Configurações -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('settingsModal')">&times;</span>
+            <h2>⚙️ Configurações</h2>
+            
+            <div class="form-group">
+                <label>Número do WhatsApp</label>
+                <input type="text" value="+55 11 99999-9999" placeholder="+55 11 99999-9999">
+            </div>
+
+            <div class="form-group">
+                <label>Mensagem Padrão WhatsApp</label>
+                <textarea rows="3">Olá! Tenho interesse no ebook [NOME_EBOOK]. Poderia me enviar mais informações?</textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Email de Contato</label>
+                <input type="email" value="contato@essenciavital.com">
+            </div>
+
+            <div class="form-group">
+                <label>Instagram</label>
+                <input type="text" value="@essencia.vital" placeholder="@usuario">
+            </div>
+
+            <button class="btn" onclick="saveSettings()">💾 Salvar Configurações</button>
+            <button class="btn btn-secondary" onclick="closeModal('settingsModal')">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Funções do Modal
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Fechar modal clicando fora
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Funções de Salvamento
+        function saveEbook() {
+            showNotification('✅ Ebook salvo com sucesso!');
+            closeModal('ebooksModal');
+            updateStats();
+        }
+
+        function addCategory() {
+            const categoryName = document.getElementById('newCategory').value;
+            if (categoryName) {
+                showNotification('✅ Categoria "' + categoryName + '" adicionada!');
+                document.getElementById('newCategory').value = '';
+                updateStats();
+            }
+        }
+
+        function saveContent() {
+            showNotification('✅ Conteúdo atualizado com sucesso!');
+            closeModal('contentModal');
+        }
+
+        function saveSettings() {
+            showNotification('✅ Configurações salvas!');
+            closeModal('settingsModal');
+        }
+
+        // Notificações
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Atualizar estatísticas
+        function updateStats() {
+            // Simular atualização de stats
+            const stats = {
+                totalEbooks: Math.floor(Math.random() * 20) + 10,
+                totalCategories: Math.floor(Math.random() * 8) + 3,
+                monthlyViews: Math.floor(Math.random() * 1000) + 500,
+                whatsappClicks: Math.floor(Math.random() * 300) + 100
+            };
+
+            Object.keys(stats).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.textContent = stats[key];
+                }
+            });
+        }
+
+        // Upload de arquivos
+        const uploadArea = document.querySelector('.upload-area');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                showNotification('📷 Imagem carregada com sucesso!');
+            }
+        });
+
+        // Animações na inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStats();
+            
+            // Animar cards com delay
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = (index * 0.1) + 's';
+            });
+        });
+    </script>
+</body>
+</html>
+
